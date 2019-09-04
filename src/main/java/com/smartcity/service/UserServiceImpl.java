@@ -27,6 +27,9 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     private UserOrganizationDao userOrgDao;
     private RoleDao roleDao;
 
+    // Visible for testing
+    static final int PAGINATION_PAGE_SIZE = 10;
+
     @Autowired
     public UserServiceImpl(UserDao userDao, UserOrganizationDao userOrgDao, UserDtoMapper userDtoMapper, RoleDao roleDao, RoleDtoMapper roleDtoMapper) {
         this.userDao = userDao;
@@ -52,8 +55,15 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     }
 
     @Override
-    public List<UserDto> findAll(int pageId, int total) {
-        List<User> users = userDao.findAll(pageId, total);
+    public List<UserDto> findAll(int pageId) {
+        if (pageId < 1) {
+            throw new IllegalArgumentException("Page id should be greater than 0");
+        }
+
+        int from = (pageId - 1) * PAGINATION_PAGE_SIZE;
+        int to = from + PAGINATION_PAGE_SIZE;
+
+        List<User> users = userDao.findAll(from, to);
         return this.convertUsersListToUsersDtosList(users);
     }
 

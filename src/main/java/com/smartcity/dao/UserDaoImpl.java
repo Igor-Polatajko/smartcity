@@ -76,12 +76,9 @@ public class UserDaoImpl implements UserDao {
     }
 
     @Override
-    public List<User> findAll(int pageId, int total) {
-
-        String limitUsers = "SELECT * FROM Users LIMIT "+(pageId-1)+","+total;
-
+    public List<User> findAll(int from, int to) {
         try {
-            return jdbcTemplate.query(limitUsers, mapper);
+            return jdbcTemplate.query(Queries.SQL_SELECT_ALL_USERS_PAGINATED, mapper, to - from, from);
         }
         catch (Exception e) {
             logger.error("Get user all users exception. Message: {}", e.getMessage());
@@ -258,7 +255,7 @@ public class UserDaoImpl implements UserDao {
                 "INSERT INTO Users(email, password, surname," +
                 " name, phone_number, active, created_date, updated_date)" +
                 " VALUES(?, ?, ?, ?, ?, ?, ?, ?)";
-        static final String SQL_SELECT_ALL_USERS = "SELECT * FROM Users";
+        static final String SQL_SELECT_ALL_USERS_PAGINATED = "SELECT * FROM Users Limit ? OFFSET ?";
 
         static final String SQL_SELECT_USERS_BY_COMMENT_ID = "" +
                 "SELECT * FROM Users WHERE id IN" +

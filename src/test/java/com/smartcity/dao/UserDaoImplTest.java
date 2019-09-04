@@ -1,6 +1,5 @@
 package com.smartcity.dao;
 
-import com.smartcity.domain.Comment;
 import com.smartcity.domain.Organization;
 import com.smartcity.domain.Role;
 import com.smartcity.domain.User;
@@ -16,7 +15,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
@@ -110,18 +108,25 @@ class UserDaoImplTest extends BaseTest {
             user.setPassword(passwordEncoder.encode(user.getPassword()));
         }
 
-        List<User> resultUserList = userDao.findAll(1,5);
+        // First 5 users (should return 2, because there is only 2 in db)
+        List<User> resultUserList = userDao.findAll(0, 5);
         for (int i = 0; i < users.size(); i++) {
             assertThat(users.get(i)).isEqualToIgnoringGivenFields(resultUserList.get(i),
                     "id", "createdDate", "updatedDate");
         }
+
+        // Only second user
+        List<User> secondUser = userDao.findAll(1, 2);
+
+        assertThat(users.get(1)).isEqualToIgnoringGivenFields(resultUserList.get(1),
+                "id", "createdDate", "updatedDate");
 
     }
 
     @Test
     void findAll_EmptyUsersTable() {
         clearTables("Users");
-        List<User> resultUserList = userDao.findAll(1,5);
+        List<User> resultUserList = userDao.findAll(1, 5);
 
         assertTrue(resultUserList.isEmpty());
     }

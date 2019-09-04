@@ -32,6 +32,19 @@ public class ExceptionInterceptor {
                 .build();
     }
 
+    @ResponseStatus(code = HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(IllegalArgumentException.class)
+    ExceptionResponse illegalArgumentException(@NonNull HttpServletRequest request,
+                                        @NonNull IllegalArgumentException ex) {
+        Preconditions.checkNotNull(request.getRequestURI());
+        Preconditions.checkNotNull(ex.getLocalizedMessage());
+
+        return ExceptionResponse.builder()
+                .url(request.getRequestURI())
+                .message(ex.getLocalizedMessage())
+                .build();
+    }
+
     @ResponseStatus(code = HttpStatus.CONFLICT)
     @ExceptionHandler(RecordExistsException.class)
     ExceptionResponse recordExistsException(@NonNull HttpServletRequest request,
