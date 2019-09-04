@@ -14,5 +14,4 @@ import org.springframework.security.web.context.AbstractSecurityWebApplicationIn
 @Configuration
 @ComponentScan(basePackages = "com.smartcity")
 public class ApplicationConfig extends AbstractSecurityWebApplicationInitializer {
-
 }

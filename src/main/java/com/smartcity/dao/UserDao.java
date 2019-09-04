@@ -10,7 +10,7 @@ public interface UserDao {
 
     User findById(Long id);
 
-    List<User> findAll(int pageId, int total);
+    List<User> findAll(int from, int to);
 
     User findByEmail(String email);
 
